@@ -1,0 +1,12 @@
+name = "SimulationData"
+uuid = "3d44aec0-db1b-416b-9784-2428c815ea7f"
+authors = ["Scottish Covid Research Consortium"]
+version = "0.1.0"
+
+[deps]
+DataDeps = "124859b0-ceae-595e-8997-d05f6a7a8dfe"
+HDF5 = "f67ccb44-e63f-5c2f-98bd-6dc0ccc4ba2f"
+Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+Simulation = "ed2dc23b-ada4-5fdb-a26f-56368a14ad8f"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
