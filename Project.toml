@@ -1,7 +1,7 @@
 name = "SimulationData"
 uuid = "3d44aec0-db1b-416b-9784-2428c815ea7f"
 authors = ["Scottish Covid Research Consortium"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 DataDeps = "124859b0-ceae-595e-8997-d05f6a7a8dfe"
