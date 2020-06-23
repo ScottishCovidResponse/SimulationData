@@ -1,10 +1,12 @@
 module SimulationData
 
+include("units.jl")
+
 using DataDeps
 using Unitful
 using Unitful.DefaultSymbols
-using Simulation
-using Simulation.Units
+#using Simulation
+#using Simulation.Units
 using HDF5
 import Pkg
 

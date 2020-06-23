@@ -1,7 +1,9 @@
 using Test
 using SimulationData
-using Simulation
-using Simulation.Units
+import SimulationData: EpiUnits
+import SimulationData.EpiUnits: day
+# using Simulation
+# using Simulation.Units
 using DataDeps
 using Pkg
 using Unitful

@@ -9,8 +9,8 @@
     β_env = p["params"]["beta_env"]
     β_force = p["params"]["beta_force"]
 
-    β_env = uparse("$(β_env) $(_unit)", unit_context = Simulation.Units)
-    β_force = uparse("$(β_force) $(_unit)", unit_context = Simulation.Units)
+    β_env = uparse("$(β_env) $(_unit)", unit_context = EpiUnits)
+    β_force = uparse("$(β_force) $(_unit)", unit_context = EpiUnits)
 
     @test β_env isa Unitful.Quantity
     @test β_env == 1.0/day
