@@ -1,14 +1,10 @@
 module SimulationData
 
-include("units.jl")
-
 using DataDeps
-using Unitful
-using Unitful.DefaultSymbols
-#using Simulation
-#using Simulation.Units
 using HDF5
 import Pkg
+
+include("units.jl")
 
 const DEFAULT = ""
 const DATABLOCK_DEFAULTLOC = "https://www.gla.ac.uk/media" # TODO: Replace

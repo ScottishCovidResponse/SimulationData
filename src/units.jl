@@ -1,4 +1,4 @@
-module EpiUnits
+module Units
 
 import Unitful
 using Unitful: @unit
@@ -27,7 +27,7 @@ const December = 11months
 const localunits = Unitful.basefactors
 function __init__()
     merge!(Unitful.basefactors, localunits)
-    Unitful.register(EpiUnits)
+    Unitful.register(Units)
 end
 
 export day, days, week, weeks, month, months, year, years, Rates,
