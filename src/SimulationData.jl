@@ -4,7 +4,15 @@ using DataDeps
 using HDF5
 import Pkg
 
+export
+    read_estimate,
+    read_distribution,
+    read_array,
+    read_table
+
+
 include("units.jl")
+include("pyapi.jl")
 
 const DEFAULT = ""
 const DATABLOCK_DEFAULTLOC = "https://www.gla.ac.uk/media" # TODO: Replace
@@ -21,6 +29,7 @@ include("register.jl")
 function __init__()
     init(DataBlock)
     init(ParameterBlock)
+    pycallinit()
 end
 
 
