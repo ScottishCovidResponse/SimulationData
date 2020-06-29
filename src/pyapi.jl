@@ -22,15 +22,15 @@ function pycallinit()
 
     def read_distribution(api, data, component):
         print("[PYTHON]: Reading distribution")
-        return api.read_distribution(data)
+        return api.read_distribution(data, component)
 
     def read_array(api, data, component):
         print("[PYTHON]: Reading array")
-        return api.read_array(data)
+        return api.read_array(data, component)
 
     def read_table(api, data, component):
         print("[PYTHON]: Reading table")
-        return api.read_table(data)
+        return api.read_table(data, component)
     """
 end
 
