@@ -6,9 +6,8 @@
         @test read_estimate(api, "parameter", "example-distribution") == 2.0
         @test read_estimate(api, "parameter", "example-samples") == 2.0
 
-        # TODO implement Julia-type return values
         # print(api.read_distribution("parameter", "example-estimate"))  # expected to fail
-        println(read_distribution(api, "parameter", "example-distribution"))
+        @test read_distribution(api, "parameter", "example-distribution") == Gamma(1.0, 2.0)
         # print(api.read_distribution("parameter", "example-samples"))  # expected to fail
 
         # TODO implement these

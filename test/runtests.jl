@@ -3,6 +3,7 @@ using SimulationData
 using SimulationData.Units
 using DataDeps
 using DataFrames
+using Distributions
 using Pkg
 using Unitful
 using HDF5

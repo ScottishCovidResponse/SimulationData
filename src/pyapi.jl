@@ -80,7 +80,17 @@ end
 
 function _parse_dist(d)
     if d.dist.name == "gamma"
-        # TODO return a Distributions.jl object
-        return d
+        # Get mean and variance
+        mv = py"$d.stats(moments='mv')"
+        mean = mv[1][1]
+        var = mv[2][1]
+        # α = shape
+        # θ = scale
+        # mean = αθ
+        # var = αθ^2
+        θ = var / mean
+        α = mean / θ
+        return Gamma(α, θ)
     end
+    error("Unable to parse $d as a distribution")
 end
