@@ -16,62 +16,62 @@ function pycallinit()
     from data_pipeline_api.standard_api import StandardAPI
     print(SimpleNetworkSimAPI)
 
-    def read_estimate(data, component):
+    def read_estimate(api, data, component):
         print("[PYTHON]: Reading estimate")
-        with StandardAPI(
-             $DEFAULT_CONFIG,
-        ) as api:
-            d = api.read_estimate(data, component)
+        return api.read_estimate(data, component)
 
-        return d
-
-    def read_distribution(data, component):
+    def read_distribution(api, data, component):
         print("[PYTHON]: Reading distribution")
-        with SimpleNetworkSimAPI(
-             $DEFAULT_CONFIG,
-        ) as api:
-            d = api.read_distribution(data)
+        return api.read_distribution(data)
 
-        return d
-
-    def read_array(data, component):
+    def read_array(api, data, component):
         print("[PYTHON]: Reading array")
-        with SimpleNetworkSimAPI(
-             $DEFAULT_CONFIG,
-        ) as api:
-            d = api.read_array(data)
+        return api.read_array(data)
 
-        return d
-
-    def read_table(data, component):
+    def read_table(api, data, component):
         print("[PYTHON]: Reading table")
-        with SimpleNetworkSimAPI(
-             $DEFAULT_CONFIG,
-        ) as api:
-            d = api.read_table(data)
-
-        return d
+        return api.read_table(data)
     """
-
 end
 
+abstract type FileAPI end
 
-function read_estimate(data_product, component)
-    d = py"read_estimate($data_product, $component)"
+struct StandardAPI <: FileAPI
+    pyapi
+end
+
+struct SimpleNetworkSimAPI <: FileAPI
+    pyapi
+end
+
+function StandardAPI(f::Function, config_filename)
+    @pywith py"StandardAPI($config_filename)" as pyapi begin
+        f(StandardAPI(pyapi))
+    end
+end
+
+function SimpleNetworkSimAPI(f::Function, config_filename)
+    @pywith py"SimpleNetworkSimAPI($config_filename)" as pyapi begin
+        f(SimpleNetworkSimAPI(pyapi))
+    end
+end
+
+function read_estimate(api::FileAPI, data_product, component)
+    d = py"read_estimate($(api.pyapi), $data_product, $component)"
     return d
 end
 
-function read_distribution(data_product, component)
-    d = py"read_distribution($data_product, $component)"
+function read_distribution(api::FileAPI, data_product, component)
+    d = py"read_distribution($(api.pyapi), $data_product, $component)"
     return d
 end
 
-function read_array(data_product, component)
-    d = py"read_array($data_product, $component)"
+function read_array(api::FileAPI, data_product, component)
+    d = py"read_array($(api.pyapi), $data_product, $component)"
     return d
 end
 
-function read_table(data_product, component)
-    d = py"read_table($data_product, $component)"
+function read_table(api::FileAPI, data_product, component)
+    d = py"read_table($(api.pyapi), $data_product, $component)"
     return DataFrames.DataFrame(Pandas.DataFrame(d))
 end
