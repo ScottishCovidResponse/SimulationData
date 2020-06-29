@@ -6,7 +6,7 @@ using PyCall
 using Pandas
 
 # Took this from the example file. Unclear what this should be, or should be an argument
-const DEFAULT_CONFIG = "../repos/data_pipeline_api/examples/test_data_2/config.yaml"
+const DEFAULT_CONFIG = "../data_pipeline_api/examples/test_data_2/config.yaml"
 
 function pycallinit()
     py"""
@@ -73,5 +73,5 @@ end
 
 function read_table(data_product, component)
     d = py"read_table($data_product, $component)"
-    return Pandas.DataFrame(d)
+    return DataFrames.DataFrame(Pandas.DataFrame(d))
 end

@@ -1,6 +1,7 @@
 module SimulationData
 
 using DataDeps
+using DataFrames
 using HDF5
 import Pkg
 
