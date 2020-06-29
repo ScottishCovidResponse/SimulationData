@@ -5,12 +5,10 @@
 using PyCall
 using Pandas
 
-# Took this from the example file. Unclear what this should be, or should be an argument
-const DEFAULT_CONFIG = "../data_pipeline_api/examples/test_data_2/config.yaml"
-
 function pycallinit()
     py"""
     import pandas as pd
+    import scipy.stats
     from pathlib import Path
     from data_pipeline_api.simple_network_sim_api import SimpleNetworkSimAPI
     from data_pipeline_api.standard_api import StandardAPI
@@ -45,15 +43,19 @@ struct SimpleNetworkSimAPI <: FileAPI
 end
 
 function StandardAPI(f::Function, config_filename)
+    result = nothing
     @pywith py"StandardAPI($config_filename)" as pyapi begin
-        f(StandardAPI(pyapi))
+        result = f(StandardAPI(pyapi))
     end
+    return result
 end
 
 function SimpleNetworkSimAPI(f::Function, config_filename)
+    result = nothing
     @pywith py"SimpleNetworkSimAPI($config_filename)" as pyapi begin
-        f(SimpleNetworkSimAPI(pyapi))
+        result = f(SimpleNetworkSimAPI(pyapi))
     end
+    return result
 end
 
 function read_estimate(api::FileAPI, data_product, component)
@@ -63,7 +65,7 @@ end
 
 function read_distribution(api::FileAPI, data_product, component)
     d = py"read_distribution($(api.pyapi), $data_product, $component)"
-    return d
+    return _parse_dist(d)
 end
 
 function read_array(api::FileAPI, data_product, component)
@@ -74,4 +76,11 @@ end
 function read_table(api::FileAPI, data_product, component)
     d = py"read_table($(api.pyapi), $data_product, $component)"
     return DataFrames.DataFrame(Pandas.DataFrame(d))
+end
+
+function _parse_dist(d)
+    if d.dist.name == "gamma"
+        # TODO return a Distributions.jl object
+        return d
+    end
 end
