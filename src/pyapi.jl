@@ -35,11 +35,11 @@ end
 abstract type FileAPI end
 
 struct StandardAPI <: FileAPI
-    pyapi
+    pyapi::PyObject
 end
 
 struct SimpleNetworkSimAPI <: FileAPI
-    pyapi
+    pyapi::PyObject
 end
 
 function StandardAPI(f::Function, config_filename)
