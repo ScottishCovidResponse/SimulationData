@@ -7,6 +7,7 @@ using HDF5
 import Pkg
 
 export
+    FileAPI,
     StandardAPI,
     SimpleNetworkSimAPI,
     read_estimate,

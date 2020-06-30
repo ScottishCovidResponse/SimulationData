@@ -36,18 +36,71 @@ function pycallinit()
     """
 end
 
+"""
+    FileAPI
+
+Wrapper around a `data_pipeline_api` python API
+"""
 abstract type FileAPI end
 
+"""
+    StandardAPI <: FileAPI
+
+Wrapper around `data_pipeline_api.standard_api.StandardAPI`
+
+Preferred use is:
+```
+StandardAPI(config_filename) do api
+    df = read_table(api, ...)
+    ...
+end
+```
+"""
 struct StandardAPI <: FileAPI
     pyapi::PyObject
 end
 
+"""
+    SimpleNetworkSimAPI <: FileAPI
+
+Wrapper around `data_pipeline_api.simple_network_sim_api.SimpleNetworkSimAPI`
+
+Preferred use is:
+```
+SimpleNetworkSimAPI(config_filename) do api
+    df = read_table(api, ...)
+    ...
+end
+```
+"""
 struct SimpleNetworkSimAPI <: FileAPI
     pyapi::PyObject
 end
 
+"""
+    StandardAPI(f::Function, config_filename)
+
+Construct a `StandardAPI` using the config found in `config_filename`, and call `f` on it.
+This will automatically take care of the API open/close methods.
+The recommended way to use this is with a `do` block:
+```
+StandardAPI(config_filename) do api
+    df = read_table(api, ...)
+    ...
+end
+```
+
+## Returns
+- The value returned by `f`
+"""
 function StandardAPI(f::Function, config_filename)
     result = nothing
+    # @pywith is from PyCall, it emulates a python "with" block.
+    # We use this so that the appropriate __enter__ and __exit__ methods are called
+    # automatically on the python API object.
+    # Note that `StandardAPI` inside py"" refers to the class in the python library, while
+    # `StandardAPI` inside the block refers to the `StandardAPI` Julia struct in this
+    # module. (They are named the same for convenience)
     @pywith py"StandardAPI($config_filename)" as pyapi begin
         result = f(StandardAPI(pyapi))
     end
