@@ -3,6 +3,8 @@ Prototype lightweight datadependency package for Simulation.jl.
 
 # Comptability with PyCall
 
+Note that there may well be better ways of setting this up. These instructions are a WIP:
+
 1) Install Miniconda for your OS
 https://docs.conda.io/projects/conda/en/latest/user-guide/install/
 2) `git clone https://github.com/ScottishCovidResponse/data_pipeline_api`
