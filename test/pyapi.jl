@@ -10,10 +10,9 @@
         @test read_distribution(api, "parameter", "example-distribution") == Gamma(1.0, 2.0)
         # print(api.read_distribution("parameter", "example-samples"))  # expected to fail
 
-        # TODO implement these
-        @test_broken read_sample(api, "parameter", "example-estimate")
-        @test_broken read_sample(api, "parameter", "example-distribution")
-        @test_broken read_sample(api, "parameter", "example-samples")
+        @test read_sample(api, "parameter", "example-estimate") == 1.0
+        @test read_sample(api, "parameter", "example-distribution") isa Real
+        @test read_sample(api, "parameter", "example-samples") ∈ [1, 2, 3]
 
         expected_table = DataFrame(:a => [1, 2], :b => [3, 4])
         expected_array = [1, 2, 3]

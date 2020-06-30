@@ -22,6 +22,10 @@ function pycallinit()
         print("[PYTHON]: Reading distribution")
         return api.read_distribution(data, component)
 
+    def read_sample(api, data, component):
+        print("[PYTHON]: Reading sample")
+        return api.read_sample(data, component)
+
     def read_array(api, data, component):
         print("[PYTHON]: Reading array")
         return api.read_array(data, component)
@@ -66,6 +70,11 @@ end
 function read_distribution(api::FileAPI, data_product, component)
     d = py"read_distribution($(api.pyapi), $data_product, $component)"
     return _parse_dist(d)
+end
+
+function read_sample(api::FileAPI, data_product, component)
+    d = py"read_sample($(api.pyapi), $data_product, $component)"
+    return convert(Float64, d)
 end
 
 function read_array(api::FileAPI, data_product, component)

@@ -11,6 +11,7 @@ export
     SimpleNetworkSimAPI,
     read_estimate,
     read_distribution,
+    read_sample,
     read_array,
     read_table
 
