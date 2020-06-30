@@ -8,6 +8,7 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/install/
 2) `git clone https://github.com/ScottishCovidResponse/data_pipeline_api`
 3) Set-up a conda environment from the environment.yml there:
 `conda env create -f <path/to/data_pipeline_api>/environment.yml`
+4) Add the `data_pipeline_api` package to your `PYTHONPATH`: `export PYTHONPATH=$PYTHONPATH:<path/to/repo`
 4) Activate this environment, then:
 ```
   using PyCall
