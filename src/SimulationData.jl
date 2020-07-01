@@ -1,12 +1,18 @@
 module SimulationData
 
 using DataDeps
+using DataFrames
+using Distributions
 using HDF5
 import Pkg
 
 export
+    FileAPI,
+    StandardAPI,
+    SimpleNetworkSimAPI,
     read_estimate,
     read_distribution,
+    read_sample,
     read_array,
     read_table
 

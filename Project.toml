@@ -1,11 +1,12 @@
 name = "SimulationData"
 uuid = "3d44aec0-db1b-416b-9784-2428c815ea7f"
 authors = ["Scottish Covid Research Consortium"]
-version = "0.1.1"
+version = "0.2.0"
 
 [deps]
 DataDeps = "124859b0-ceae-595e-8997-d05f6a7a8dfe"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 HDF5 = "f67ccb44-e63f-5c2f-98bd-6dc0ccc4ba2f"
 Pandas = "eadc2687-ae89-51f9-a5d9-86b5a6373a9c"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
