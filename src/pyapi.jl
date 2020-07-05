@@ -7,9 +7,6 @@ using Pandas
 
 function pycallinit()
     py"""
-    import pandas as pd
-    import scipy.stats
-    from pathlib import Path
     from data_pipeline_api.simple_network_sim_api import SimpleNetworkSimAPI
     from data_pipeline_api.standard_api import StandardAPI
     print(SimpleNetworkSimAPI)
