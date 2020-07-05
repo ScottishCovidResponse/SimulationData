@@ -11,6 +11,7 @@ notifications:
 
 env:
   TRAVIS_CI_BUILD=true
+  DATADEPS_ALWAYS_ACCEPT=true
 
 jobs:
   allow_failures:
