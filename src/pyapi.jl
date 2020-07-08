@@ -127,9 +127,20 @@ function read_sample(api::FileAPI, data_product, component)
     return convert(Float64, d)
 end
 
+"""
+    read_array(api::FileAPI, data_product, component)
+
+Read an array using `api`.
+
+## Returns
+`NamedTuple{(:data, :dimensions, :units)}`
+"""
 function read_array(api::FileAPI, data_product, component)
-    d = py"read_array($(api.pyapi), $data_product, $component)"
-    return d
+    # The python API returns Array(data=data, dimensions=dimensions, units=units)
+    # Disable automatic conversion with 'o' at the end
+    d = py"read_array($(api.pyapi), $data_product, $component)"o
+    # Convert to NamedTuple
+    return (data=d.data, dimensions=d.dimensions, units=d.units)
 end
 
 function read_table(api::FileAPI, data_product, component)
