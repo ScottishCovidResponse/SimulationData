@@ -1,0 +1,28 @@
+# Documentation: http://docs.travis-ci.com/user/languages/julia/
+language: julia
+os:
+  - linux
+  - osx
+julia: # https://github.com/ScottishCovidResponse/SCRCIssueTracking/issues/16
+  - 1.4
+  - 1.5
+notifications:
+  email: false
+
+env:
+  TRAVIS_CI_BUILD=true
+  DATADEPS_ALWAYS_ACCEPT=true
+
+jobs:
+  allow_failures:
+    - julia: 1.5
+
+script:
+  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+  - julia --project=@. -e "using Pkg; Pkg.activate(\".\"); Pkg.instantiate(); Pkg.build(\"SimulationData\"); Pkg.test(\"SimulationData\", coverage=true);"
+
+after_success:
+  # push coverage results to Coveralls
+  - julia -e 'using Pkg; cd(Pkg.dir("SimulationData")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
+  # push coverage results to Codecov
+  - julia -e 'using Pkg; cd(Pkg.dir("SimulationData")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'

@@ -1,27 +1,15 @@
 # SimulationData
 Prototype lightweight datadependency package for Simulation.jl.
 
-# Comptability with PyCall
+# Compatibility with PyCall
 
-Note that there may well be better ways of setting this up. These instructions are a WIP:
+This package uses the PyCall package to wrap around the `data_pipeline_api` python package.
+To do this, it is necessary to build the package before running.
+This essentially builds PyCall against the private miniconda environment in Conda.jl
+The remaining steps in build will instantiate the root Conda environment from the
+python `environment.yml`
 
-1) Install Miniconda for your OS
-https://docs.conda.io/projects/conda/en/latest/user-guide/install/
-2) `git clone https://github.com/ScottishCovidResponse/data_pipeline_api`
-3) Set-up a conda environment from the environment.yml there:
-`conda env create -f <path/to/data_pipeline_api>/environment.yml`
-4) Add the `data_pipeline_api` package to your `PYTHONPATH`: `export PYTHONPATH=$PYTHONPATH:<path/to/repo`
-5) Activate this environment, then: 
-```
-  using PyCall
-  ENV["PYTHON"] = Sys.which("python")
-  using Pkg; Pkg.build("PyCall")
-```
-PyCall needs to be build against the appropriate conda environment,
-otherwise it cannot see this package. 
 
-6) Test that the `__init__` steps work in `SimulationData`, where these
-python packages work.
 
 
 **Table of datasets currently in use by Simulation.jl**
