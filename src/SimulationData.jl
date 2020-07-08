@@ -9,7 +9,6 @@ import Pkg
 export
     FileAPI,
     StandardAPI,
-    SimpleNetworkSimAPI,
     read_estimate,
     read_distribution,
     read_sample,

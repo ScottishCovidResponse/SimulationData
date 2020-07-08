@@ -7,9 +7,8 @@ using Pandas
 
 function pycallinit()
     py"""
-    from data_pipeline_api.simple_network_sim_api import SimpleNetworkSimAPI
     from data_pipeline_api.standard_api import StandardAPI
-    print(SimpleNetworkSimAPI)
+    print(StandardAPI)
     """
 end
 
@@ -34,23 +33,6 @@ end
 ```
 """
 struct StandardAPI <: FileAPI
-    pyapi::PyObject
-end
-
-"""
-    SimpleNetworkSimAPI <: FileAPI
-
-Wrapper around `data_pipeline_api.simple_network_sim_api.SimpleNetworkSimAPI`
-
-Preferred use is:
-```
-SimpleNetworkSimAPI(config_filename) do api
-    df = read_table(api, ...)
-    ...
-end
-```
-"""
-struct SimpleNetworkSimAPI <: FileAPI
     pyapi::PyObject
 end
 
@@ -80,14 +62,6 @@ function StandardAPI(f::Function, config_filename)
     # module. (They are named the same for convenience)
     @pywith py"StandardAPI($config_filename)" as pyapi begin
         result = f(StandardAPI(pyapi))
-    end
-    return result
-end
-
-function SimpleNetworkSimAPI(f::Function, config_filename)
-    result = nothing
-    @pywith py"SimpleNetworkSimAPI($config_filename)" as pyapi begin
-        result = f(SimpleNetworkSimAPI(pyapi))
     end
     return result
 end
