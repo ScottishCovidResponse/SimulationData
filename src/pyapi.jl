@@ -31,6 +31,14 @@ StandardAPI(config_filename) do api
     ...
 end
 ```
+
+The following also works, but needs an explicit `close` call to write out the access file:
+```
+api = StandardAPI(config_filename)
+read_table(api, ...)
+...
+close(api) # writes out the access file
+```
 """
 struct StandardAPI <: FileAPI
     pyapi::PyObject
@@ -66,6 +74,10 @@ function StandardAPI(f::Function, config_filename)
         result = f(StandardAPI(pyapi))
     end
     return result
+end
+
+function Base.close(api::FileAPI)
+    py"$(api.pyapi).close()"
 end
 
 function read_estimate(api::FileAPI, data_product, component)

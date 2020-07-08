@@ -1,5 +1,7 @@
 @testset "pyapi" begin
     config = joinpath("data", "config.yaml")
+    accessfile = joinpath("data", "access-example.yaml")
+    remove_accessfile() = rm(accessfile, force=true)
 
     function _testsuite(api)
         @test read_estimate(api, "parameter", "example-estimate") == 1.0
@@ -21,12 +23,22 @@
     end
 
     @testset "Basic syntax" begin
-        _testsuite(StandardAPI(config))
+        remove_accessfile()
+        api = StandardAPI(config)
+        _testsuite(api)
+        # Need to manually close to write out access file
+        @test !isfile(accessfile)
+        close(api)
+        @test isfile(accessfile)
+        remove_accessfile()
     end
 
     @testset "do-block syntax" begin
+        remove_accessfile()
         StandardAPI(config) do api
             _testsuite(api)
         end
+        @test isfile(accessfile)
+        remove_accessfile()
     end
 end
