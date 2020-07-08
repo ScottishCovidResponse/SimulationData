@@ -118,7 +118,7 @@ function read_estimate(api::FileAPI, data_product, component)
 end
 
 function read_distribution(api::FileAPI, data_product, component)
-    d = py"read_distribution($(api.pyapi), $data_product, $component)"
+    d = py"read_distribution($(api.pyapi), $data_product, $component)"o
     return _parse_dist(d)
 end
 
@@ -149,18 +149,13 @@ function read_table(api::FileAPI, data_product, component)
 end
 
 function _parse_dist(d)
-    if d.dist.name == "gamma"
-        # Get mean and variance
-        mv = py"$d.stats(moments='mv')"
-        mean = mv[1][1]
-        var = mv[2][1]
-        # α = shape
-        # θ = scale
-        # mean = αθ
-        # var = αθ^2
-        θ = var / mean
-        α = mean / θ
-        return Gamma(α, θ)
+    name = d.dist.name
+    kwds = d.kwds
+    if name == "gamma"
+        return Gamma(kwds["a"], kwds["scale"])
+    end
+    if name == "norm"
+        return Normal(kwds["loc"], kwds["scale"])
     end
     error("Unable to parse $d as a distribution")
 end
