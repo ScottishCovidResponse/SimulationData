@@ -36,6 +36,8 @@ struct StandardAPI <: FileAPI
     pyapi::PyObject
 end
 
+StandardAPI(config_filename::AbstractString) = StandardAPI(py"StandardAPI($config_filename)")
+
 """
     StandardAPI(f::Function, config_filename)
 
