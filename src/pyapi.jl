@@ -7,29 +7,8 @@ using Pandas
 
 function pycallinit()
     py"""
-    from data_pipeline_api.simple_network_sim_api import SimpleNetworkSimAPI
     from data_pipeline_api.standard_api import StandardAPI
-    print(SimpleNetworkSimAPI)
-
-    def read_estimate(api, data, component):
-        print("[PYTHON]: Reading estimate")
-        return api.read_estimate(data, component)
-
-    def read_distribution(api, data, component):
-        print("[PYTHON]: Reading distribution")
-        return api.read_distribution(data, component)
-
-    def read_sample(api, data, component):
-        print("[PYTHON]: Reading sample")
-        return api.read_sample(data, component)
-
-    def read_array(api, data, component):
-        print("[PYTHON]: Reading array")
-        return api.read_array(data, component)
-
-    def read_table(api, data, component):
-        print("[PYTHON]: Reading table")
-        return api.read_table(data, component)
+    print(StandardAPI)
     """
 end
 
@@ -52,27 +31,20 @@ StandardAPI(config_filename) do api
     ...
 end
 ```
+
+The following also works, but needs an explicit `close` call to write out the access file:
+```
+api = StandardAPI(config_filename)
+read_table(api, ...)
+...
+close(api) # writes out the access file
+```
 """
 struct StandardAPI <: FileAPI
     pyapi::PyObject
 end
 
-"""
-    SimpleNetworkSimAPI <: FileAPI
-
-Wrapper around `data_pipeline_api.simple_network_sim_api.SimpleNetworkSimAPI`
-
-Preferred use is:
-```
-SimpleNetworkSimAPI(config_filename) do api
-    df = read_table(api, ...)
-    ...
-end
-```
-"""
-struct SimpleNetworkSimAPI <: FileAPI
-    pyapi::PyObject
-end
+StandardAPI(config_filename::AbstractString) = StandardAPI(py"StandardAPI($config_filename)")
 
 """
     StandardAPI(f::Function, config_filename)
@@ -104,52 +76,54 @@ function StandardAPI(f::Function, config_filename)
     return result
 end
 
-function SimpleNetworkSimAPI(f::Function, config_filename)
-    result = nothing
-    @pywith py"SimpleNetworkSimAPI($config_filename)" as pyapi begin
-        result = f(SimpleNetworkSimAPI(pyapi))
-    end
-    return result
+function Base.close(api::FileAPI)
+    py"$(api.pyapi).close()"
 end
 
 function read_estimate(api::FileAPI, data_product, component)
-    d = py"read_estimate($(api.pyapi), $data_product, $component)"
+    d = py"$(api.pyapi).read_estimate($data_product, $component)"
     return d
 end
 
 function read_distribution(api::FileAPI, data_product, component)
-    d = py"read_distribution($(api.pyapi), $data_product, $component)"
+    d = py"$(api.pyapi).read_distribution($data_product, $component)"o
     return _parse_dist(d)
 end
 
 function read_sample(api::FileAPI, data_product, component)
-    d = py"read_sample($(api.pyapi), $data_product, $component)"
+    d = py"$(api.pyapi).read_sample($data_product, $component)"
     return convert(Float64, d)
 end
 
+"""
+    read_array(api::FileAPI, data_product, component)
+
+Read an array using `api`.
+
+## Returns
+`NamedTuple{(:data, :dimensions, :units)}`
+"""
 function read_array(api::FileAPI, data_product, component)
-    d = py"read_array($(api.pyapi), $data_product, $component)"
-    return d
+    # The python API returns Array(data=data, dimensions=dimensions, units=units)
+    # Disable automatic conversion with 'o' at the end
+    d = py"$(api.pyapi).read_array($data_product, $component)"o
+    # Convert to NamedTuple
+    return (data=d.data, dimensions=d.dimensions, units=d.units)
 end
 
 function read_table(api::FileAPI, data_product, component)
-    d = py"read_table($(api.pyapi), $data_product, $component)"
+    d = py"$(api.pyapi).read_table($data_product, $component)"
     return DataFrames.DataFrame(Pandas.DataFrame(d))
 end
 
 function _parse_dist(d)
-    if d.dist.name == "gamma"
-        # Get mean and variance
-        mv = py"$d.stats(moments='mv')"
-        mean = mv[1][1]
-        var = mv[2][1]
-        # α = shape
-        # θ = scale
-        # mean = αθ
-        # var = αθ^2
-        θ = var / mean
-        α = mean / θ
-        return Gamma(α, θ)
+    name = d.dist.name
+    kwds = d.kwds
+    if name == "gamma"
+        return Gamma(kwds["a"], kwds["scale"])
+    end
+    if name == "norm"
+        return Normal(kwds["loc"], kwds["scale"])
     end
     error("Unable to parse $d as a distribution")
 end
