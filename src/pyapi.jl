@@ -93,7 +93,7 @@ An issue associated with a data product or component.
 """
 struct DataPipelineIssue
     description::AbstractString
-    severity::AbstractString
+    severity::Integer
 end
 
 function Base.close(api::DataPipelineAPI)

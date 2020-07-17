@@ -70,5 +70,42 @@
             @test isfile(accessfile)
             remove_accessfile()
         end
+
+        @testset "Issue logging" begin
+            cp("data", datadir; force=true)
+            remove_accessfile()
+            StandardAPI(config, "test_uri", "test_git_sha") do api
+                issues = [
+                    DataPipelineIssue("test issue 1", 1),
+                    DataPipelineIssue("test issue 2", 2),
+                ]
+                write_estimate(api, "parameter", "example-estimate", 1.0; issues=issues)
+            end
+            access_yaml = YAML.load_file(accessfile)
+            @test access_yaml["io"][1]["call_metadata"]["issues"] == [
+                Dict("description"=>"test issue 1", "severity"=>1),
+                Dict("description"=>"test issue 2", "severity"=>2),
+            ]
+            @test access_yaml["io"][1]["access_metadata"]["issues"] == [
+                Dict("description"=>"test issue 1", "severity"=>1),
+                Dict("description"=>"test issue 2", "severity"=>2),
+            ]
+            remove_accessfile()
+        end
+
+        @testset "Descriptions" begin
+            cp("data", datadir; force=true)
+            remove_accessfile()
+            StandardAPI(config, "test_uri", "test_git_sha") do api
+                write_estimate(
+                    api, "parameter", "example-estimate", 1.0;
+                    description="test description"
+                )
+            end
+            access_yaml = YAML.load_file(accessfile)
+            @test access_yaml["io"][1]["call_metadata"]["description"] == "test description"
+            @test access_yaml["io"][1]["access_metadata"]["description"] == "test description"
+            remove_accessfile()
+        end
     end
 end
