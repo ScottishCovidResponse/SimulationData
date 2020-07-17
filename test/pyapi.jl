@@ -1,7 +1,4 @@
 @testset "pyapi" begin
-    config = joinpath("data", "config.yaml")
-    accessfile = joinpath("data", "access-example.yaml")
-    remove_accessfile() = rm(accessfile, force=true)
 
     function _testsuite(api)
         @testset "Read API" begin
@@ -24,23 +21,32 @@
         end
     end
 
-    @testset "Basic syntax" begin
-        remove_accessfile()
-        api = StandardAPI(config, "test_uri", "test_git_sha")
-        _testsuite(api)
-        # Need to manually close to write out access file
-        @test !isfile(accessfile)
-        close(api)
-        @test isfile(accessfile)
-        remove_accessfile()
-    end
+    # Make a copy because we will be writing stuff
+    mktempdir() do tempdir
+        datadir = mkdir(joinpath(tempdir, "data"))
+        cp("data", datadir; force=true)
+        config = joinpath(datadir, "config.yaml")
+        accessfile = joinpath(datadir, "access-example.yaml")
+        remove_accessfile() = rm(accessfile, force=true)
 
-    @testset "do-block syntax" begin
-        remove_accessfile()
-        StandardAPI(config, "test_uri", "test_git_sha") do api
+        @testset "Basic syntax" begin
+            remove_accessfile()
+            api = StandardAPI(config, "test_uri", "test_git_sha")
             _testsuite(api)
+            # Need to manually close to write out access file
+            @test !isfile(accessfile)
+            close(api)
+            @test isfile(accessfile)
+            remove_accessfile()
         end
-        @test isfile(accessfile)
-        remove_accessfile()
+
+        @testset "do-block syntax" begin
+            remove_accessfile()
+            StandardAPI(config, "test_uri", "test_git_sha") do api
+                _testsuite(api)
+            end
+            @test isfile(accessfile)
+            remove_accessfile()
+        end
     end
 end
