@@ -129,3 +129,53 @@ function _parse_dist(d)
     end
     error("Unable to parse $d as a distribution")
 end
+
+function write_estimate(
+    api::DataPipelineAPI, data_product, component, estimate;
+    description=nothing, issues=nothing
+)
+    return py"$(api.pyapi).write_estimate(
+        $data_product, $component, $estimate,
+        description=$description, issues=$issues
+    )"
+end
+
+function write_distribution(
+    api::DataPipelineAPI, data_product, component, distribution::Distribution;
+    description=nothing, issues=nothing
+)
+    return py"$(api.pyapi).write_distribution(
+        $data_product, $component, $distribution,
+        description=$description, issues=$issues
+    )"
+end
+
+function write_samples(
+    api::DataPipelineAPI, data_product, component, samples;
+    description=nothing, issues=nothing
+)
+    return py"$(api.pyapi).write_samples(
+        $data_product, $component, $samples,
+        description=$description, issues=$issues
+    )"
+end
+
+function write_array(
+    api::DataPipelineAPI, data_product, component, array;
+    description=nothing, issues=nothing
+)
+    return py"$(api.pyapi).write_array(
+        $data_product, $component, $array,
+        description=$description, issues=$issues
+    )"
+end
+
+function write_table(
+    api::DataPipelineAPI, data_product, component, table;
+    description=nothing, issues=nothing
+)
+    return py"$(api.pyapi).write_table(
+        $data_product, $component, $table,
+        description=$description, issues=$issues
+    )"
+end
