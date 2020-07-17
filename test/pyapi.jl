@@ -19,17 +19,38 @@
             @test read_table(api, "object", "example-table") == expected_table
             @test read_array(api, "object", "example-array") == expected_array
         end
+
+        @testset "Write API" begin
+            write_estimate(api, "parameter", "example-estimate", 99.0)
+            @test read_estimate(api, "parameter", "example-estimate") == 99.0
+
+            @testset "Write $d" for d in (Gamma(4, 5), Normal(4, 5))
+                write_distribution(api, "parameter", "example-distribution", d)
+                @test read_distribution(api, "parameter", "example-distribution") == d
+            end
+
+            write_samples(api, "parameter", "example-samples", [9, 10, 11])
+            @test read_sample(api, "parameter", "example-samples") ∈ [9, 10, 11]
+
+            df = DataFrame(:a => [9, 10], :b => [11, 12])
+            write_table(api, "object", "example-table", df)
+            @test_broken read_table(api, "object", "example-table") == df
+
+            write_array(api, "object", "example-array", [4, 5, 6])
+            expected_array = (data=[4, 5, 6], dimensions=nothing, units=nothing)
+            @test_broken read_array(api, "object", "example-array") == expected_array
+        end
     end
 
-    # Make a copy because we will be writing stuff
     mktempdir() do tempdir
         datadir = mkdir(joinpath(tempdir, "data"))
-        cp("data", datadir; force=true)
         config = joinpath(datadir, "config.yaml")
         accessfile = joinpath(datadir, "access-example.yaml")
         remove_accessfile() = rm(accessfile, force=true)
 
+        # Fresh copy of data for each testset because we will be writing stuff
         @testset "Basic syntax" begin
+            cp("data", datadir; force=true)
             remove_accessfile()
             api = StandardAPI(config, "test_uri", "test_git_sha")
             _testsuite(api)
@@ -41,6 +62,7 @@
         end
 
         @testset "do-block syntax" begin
+            cp("data", datadir; force=true)
             remove_accessfile()
             StandardAPI(config, "test_uri", "test_git_sha") do api
                 _testsuite(api)

@@ -8,6 +8,7 @@ using Pandas
 
 function pycallinit()
     py"""
+    import scipy
     from data_pipeline_api.standard_api import StandardAPI
     """
     api_version = Conda.version("data-pipeline-api")
@@ -106,7 +107,7 @@ end
 
 function read_distribution(api::DataPipelineAPI, data_product, component)
     d = py"$(api.pyapi).read_distribution($data_product, $component)"o
-    return _parse_dist(d)
+    return _dist_py_to_jl(d)
 end
 
 function read_sample(api::DataPipelineAPI, data_product, component)
@@ -135,7 +136,7 @@ function read_table(api::DataPipelineAPI, data_product, component)
     return DataFrames.DataFrame(Pandas.DataFrame(d))
 end
 
-function _parse_dist(d)
+function _dist_py_to_jl(d)
     name = d.dist.name
     kwds = d.kwds
     if name == "gamma"
@@ -145,6 +146,14 @@ function _parse_dist(d)
         return Normal(kwds["loc"], kwds["scale"])
     end
     error("Unable to parse $d as a distribution")
+end
+
+function _dist_jl_to_py(d::Normal)
+    return py"scipy.stats.norm(loc=$(d.μ), scale=$(d.σ))"
+end
+
+function _dist_jl_to_py(d::Gamma)
+    return py"scipy.stats.gamma($(d.α), scale=$(d.θ))"
 end
 
 function write_estimate(
@@ -168,7 +177,7 @@ function write_distribution(
         issues = nothing
     end
     return py"$(api.pyapi).write_distribution(
-        $data_product, $component, $distribution,
+        $data_product, $component, $(_dist_jl_to_py(distribution)),
         description=$description, issues=$issues
     )"
 end
@@ -187,8 +196,12 @@ function write_samples(
 end
 
 function write_array(
-    api::DataPipelineAPI, data_product, component, array;
-    description=nothing, issues::AbstractVector{DataPipelineIssue}=DataPipelineIssue[]
+    api::DataPipelineAPI,
+    data_product,
+    component,
+    array::NamedTuple{(:data, :dimensions, :units)};
+    description=nothing,
+    issues::AbstractVector{DataPipelineIssue}=DataPipelineIssue[]
 )
     if isempty(issues)
         issues = nothing
@@ -199,6 +212,17 @@ function write_array(
     )"
 end
 
+function write_array(
+    api::DataPipelineAPI, data_product, component, array;
+    description=nothing, issues::AbstractVector{DataPipelineIssue}=DataPipelineIssue[]
+)
+    array = (data=array, dimensions=nothing, units=nothing)
+    return write_array(
+        api, data_product, component, array;
+        description=description, issues=issues
+    )
+end
+
 function write_table(
     api::DataPipelineAPI, data_product, component, table;
     description=nothing, issues::AbstractVector{DataPipelineIssue}=DataPipelineIssue[]
@@ -206,6 +230,7 @@ function write_table(
     if isempty(issues)
         issues = nothing
     end
+    table = Pandas.DataFrame(table)
     return py"$(api.pyapi).write_table(
         $data_product, $component, $table,
         description=$description, issues=$issues
