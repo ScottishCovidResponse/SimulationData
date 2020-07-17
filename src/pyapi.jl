@@ -2,25 +2,27 @@
 # Note that this reuquires that the running virtual env is the conda env for
 # the datapipeline April
 
+using Conda
 using PyCall
 using Pandas
 
 function pycallinit()
     py"""
     from data_pipeline_api.standard_api import StandardAPI
-    print(StandardAPI)
     """
+    api_version = Conda.version("data-pipeline-api")
+    @info "Found data-pipeline-api v$api_version"
 end
 
 """
-    FileAPI
+    DataPipelineAPI
 
 Wrapper around a `data_pipeline_api` python API
 """
-abstract type FileAPI end
+abstract type DataPipelineAPI end
 
 """
-    StandardAPI <: FileAPI
+    StandardAPI <: DataPipelineAPI
 
 Wrapper around `data_pipeline_api.standard_api.StandardAPI`
 
@@ -40,7 +42,7 @@ read_table(api, ...)
 close(api) # writes out the access file
 ```
 """
-struct StandardAPI <: FileAPI
+struct StandardAPI <: DataPipelineAPI
     pyapi::PyObject
 end
 
@@ -76,34 +78,34 @@ function StandardAPI(f::Function, config_filename)
     return result
 end
 
-function Base.close(api::FileAPI)
+function Base.close(api::DataPipelineAPI)
     py"$(api.pyapi).close()"
 end
 
-function read_estimate(api::FileAPI, data_product, component)
+function read_estimate(api::DataPipelineAPI, data_product, component)
     d = py"$(api.pyapi).read_estimate($data_product, $component)"
     return d
 end
 
-function read_distribution(api::FileAPI, data_product, component)
+function read_distribution(api::DataPipelineAPI, data_product, component)
     d = py"$(api.pyapi).read_distribution($data_product, $component)"o
     return _parse_dist(d)
 end
 
-function read_sample(api::FileAPI, data_product, component)
+function read_sample(api::DataPipelineAPI, data_product, component)
     d = py"$(api.pyapi).read_sample($data_product, $component)"
     return convert(Float64, d)
 end
 
 """
-    read_array(api::FileAPI, data_product, component)
+    read_array(api::DataPipelineAPI, data_product, component)
 
 Read an array using `api`.
 
 ## Returns
 `NamedTuple{(:data, :dimensions, :units)}`
 """
-function read_array(api::FileAPI, data_product, component)
+function read_array(api::DataPipelineAPI, data_product, component)
     # The python API returns Array(data=data, dimensions=dimensions, units=units)
     # Disable automatic conversion with 'o' at the end
     d = py"$(api.pyapi).read_array($data_product, $component)"o
@@ -111,7 +113,7 @@ function read_array(api::FileAPI, data_product, component)
     return (data=d.data, dimensions=d.dimensions, units=d.units)
 end
 
-function read_table(api::FileAPI, data_product, component)
+function read_table(api::DataPipelineAPI, data_product, component)
     d = py"$(api.pyapi).read_table($data_product, $component)"
     return DataFrames.DataFrame(Pandas.DataFrame(d))
 end

@@ -7,7 +7,7 @@ using HDF5
 import Pkg
 
 export
-    FileAPI,
+    DataPipelineAPI,
     StandardAPI,
     read_estimate,
     read_distribution,
