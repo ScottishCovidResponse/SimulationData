@@ -8,6 +8,7 @@ import Pkg
 
 export
     DataPipelineAPI,
+    DataPipelineIssue,
     StandardAPI,
     read_estimate,
     read_distribution,
