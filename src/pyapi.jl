@@ -28,7 +28,7 @@ Wrapper around `data_pipeline_api.standard_api.StandardAPI`
 
 Preferred use is:
 ```
-StandardAPI(config_filename) do api
+StandardAPI(config_filename, uri, git_sha) do api
     df = read_table(api, ...)
     ...
 end
@@ -36,7 +36,7 @@ end
 
 The following also works, but needs an explicit `close` call to write out the access file:
 ```
-api = StandardAPI(config_filename)
+api = StandardAPI(config_filename, uri, git_sha)
 read_table(api, ...)
 ...
 close(api) # writes out the access file
@@ -46,16 +46,19 @@ struct StandardAPI <: DataPipelineAPI
     pyapi::PyObject
 end
 
-StandardAPI(config_filename::AbstractString) = StandardAPI(py"StandardAPI($config_filename)")
+function StandardAPI(config_filename::AbstractString, uri, git_sha)
+    isfile(config_filename) || throw(ArgumentError("File $config_filename not found"))
+    return StandardAPI(py"StandardAPI($config_filename, $uri, $git_sha)")
+end
 
 """
-    StandardAPI(f::Function, config_filename)
+    StandardAPI(f::Function, config_filename, uri, git_sha)
 
 Construct a `StandardAPI` using the config found in `config_filename`, and call `f` on it.
 This will automatically take care of the API open/close methods.
 The recommended way to use this is with a `do` block:
 ```
-StandardAPI(config_filename) do api
+StandardAPI(config_filename, uri, git_sha) do api
     df = read_table(api, ...)
     ...
 end
@@ -64,7 +67,7 @@ end
 ## Returns
 - The value returned by `f`
 """
-function StandardAPI(f::Function, config_filename)
+function StandardAPI(f::Function, config_filename, uri, git_sha)
     result = nothing
     # @pywith is from PyCall, it emulates a python "with" block.
     # We use this so that the appropriate __enter__ and __exit__ methods are called
@@ -72,14 +75,14 @@ function StandardAPI(f::Function, config_filename)
     # Note that `StandardAPI` inside py"" refers to the class in the python library, while
     # `StandardAPI` inside the block refers to the `StandardAPI` Julia struct in this
     # module. (They are named the same for convenience)
-    @pywith py"StandardAPI($config_filename)" as pyapi begin
+    @pywith py"StandardAPI($config_filename, $uri, $git_sha)" as pyapi begin
         result = f(StandardAPI(pyapi))
     end
     return result
 end
 
 function Base.close(api::DataPipelineAPI)
-    py"$(api.pyapi).close()"
+    py"$(api.pyapi).file_api.close()"
 end
 
 function read_estimate(api::DataPipelineAPI, data_product, component)
