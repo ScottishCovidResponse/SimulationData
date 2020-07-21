@@ -52,6 +52,8 @@
         @testset "Basic syntax" begin
             cp("data", datadir; force=true)
             remove_accessfile()
+            # Need to specify URI and git sha
+            @test_throws MethodError StandardAPI(config)
             api = StandardAPI(config, "test_uri", "test_git_sha")
             _testsuite(api)
             # Need to manually close to write out access file

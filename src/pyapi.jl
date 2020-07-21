@@ -45,11 +45,13 @@ close(api) # writes out the access file
 """
 struct StandardAPI <: DataPipelineAPI
     pyapi::PyObject
-end
 
-function StandardAPI(config_filename::AbstractString, uri, git_sha)
-    isfile(config_filename) || throw(ArgumentError("File $config_filename not found"))
-    return StandardAPI(py"StandardAPI($config_filename, $uri, $git_sha)")
+    function StandardAPI(config_filename, uri, git_sha)
+        isfile(config_filename) || throw(ArgumentError("File $config_filename not found"))
+        return StandardAPI(py"StandardAPI($config_filename, $uri, $git_sha)")
+    end
+
+    StandardAPI(pyapi::PyObject) = new(pyapi)
 end
 
 """
