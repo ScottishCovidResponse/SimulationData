@@ -7,13 +7,19 @@ using HDF5
 import Pkg
 
 export
-    FileAPI,
+    DataPipelineAPI,
+    DataPipelineIssue,
     StandardAPI,
     read_estimate,
     read_distribution,
     read_sample,
     read_array,
-    read_table
+    read_table,
+    write_estimate,
+    write_distribution,
+    write_samples,
+    write_array,
+    write_table
 
 
 include("units.jl")

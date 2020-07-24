@@ -1,7 +1,7 @@
 name = "SimulationData"
 uuid = "3d44aec0-db1b-416b-9784-2428c815ea7f"
 authors = ["Scottish Covid Research Consortium"]
-version = "0.3.0"
+version = "0.4.0"
 
 [deps]
 Conda = "8f4d0f93-b110-5947-807f-2305c1781a2d"
@@ -14,3 +14,9 @@ Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
+
+[extras]
+YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
+
+[targets]
+test = ["YAML"]
