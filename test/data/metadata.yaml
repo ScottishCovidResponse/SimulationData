@@ -1,25 +1,50 @@
 -
-  data_product: parameter
+  data_product: parameter-read
   component: example-estimate
   version: 1.0.0
   filename: parameter/example.toml
 -
-  data_product: parameter
+  data_product: parameter-read
   component: example-distribution
   version: 1.0.0
   filename: parameter/example.toml
 -
-  data_product: parameter
+  data_product: parameter-read
   component: example-samples
   version: 1.0.0
   filename: parameter/example.toml
 -
-  data_product: object
+  data_product: object-read
   component: example-table
   version: 1.0.0
   filename: object/example.h5
 -
-  data_product: object
+  data_product: object-read
   component: example-array
   version: 1.0.0
   filename: object/example.h5
+-
+  data_product: parameter-write
+  component: example-estimate
+  version: 1.0.0
+  filename: parameter-write/simulationdata.toml
+-
+  data_product: parameter-write
+  component: example-distribution
+  version: 1.0.0
+  filename: parameter-write/simulationdata.toml
+-
+  data_product: parameter-write
+  component: example-samples
+  version: 1.0.0
+  filename: parameter-write/simulationdata.toml
+-
+  data_product: object-write
+  component: example-table
+  version: 1.0.0
+  filename: object-write/simulationdata.h5
+-
+  data_product: object-write
+  component: example-array
+  version: 1.0.0
+  filename: object-write/simulationdata.h5
