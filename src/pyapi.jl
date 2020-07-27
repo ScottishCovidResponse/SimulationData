@@ -10,6 +10,12 @@ function pycallinit()
     py"""
     import scipy
     from data_pipeline_api.standard_api import StandardAPI
+    #from data_pipeline_api import registry
+    #from data_pipeline_api.registry.common import (
+    #    DATA_REGISTRY_ACCESS_TOKEN,
+    #    DATA_REGISTRY_URL,
+    #    DEFAULT_DATA_REGISTRY_URL,
+    #)
     """
     api_version = Conda.version("data-pipeline-api")
     @info "Found data-pipeline-api v$api_version"
@@ -237,4 +243,15 @@ function write_table(
         $data_product, $component, $table,
         description=$description, issues=$issues
     )"
+end
+
+function download_registry(config_filename)
+    # Only support default for now
+    data_registry = py"DEFAULT_DATA_REGISTRY_URL"
+    return data_registry
+    #py"download_from_config_file(
+    #    config_filename=$config_filename,
+    #    data_registry_url=$data_registry,
+    #    token=$token
+    #)"
 end
