@@ -34,7 +34,7 @@
 
             @test_throws Exception read_estimate(api, "parameter-write", "example-samples")
             write_samples(api, "parameter-write", "example-samples", [9, 10, 11])
-            #@test read_samples(api, "parameter-write", "example-samples") ∈ [9, 10, 11]
+            @test all(read_samples(api, "parameter-write", "example-samples") .∈ [9.0, 10, 11])
 
             @test_throws Exception read_estimate(api, "object-write", "example-table")
             df = DataFrame(:a => [9, 10], :b => [11, 12])

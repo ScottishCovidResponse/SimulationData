@@ -114,7 +114,7 @@ end
 
 function read_samples(api::DataPipelineAPI, data_product, component)
     d = py"$(api.pyapi).read_samples($data_product, $component)"
-    return convert(Float64, d)
+    return convert(Array{Float64}, d)
 end
 
 """
