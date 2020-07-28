@@ -1,6 +1,8 @@
 # SimulationData
 Prototype lightweight datadependency package for Simulation.jl.
 
+[![Build Status](https://travis-ci.com/ScottishCovidResponse/SimulationData.jl.svg?branch=master)](https://travis-ci.com/ScottishCovidResponse/SimulationData.jl)
+
 # Compatibility with PyCall
 
 This package uses the PyCall package to wrap around the `data_pipeline_api` python package.
