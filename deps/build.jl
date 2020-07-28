@@ -6,4 +6,4 @@ using Conda
 
 pip = joinpath(Conda.BINDIR, "pip")
 run(`$pip install pyyaml setuptools-scm`)
-run(`$pip install git+https://github.com/ScottishCovidResponse/data_pipeline_api@0.5.0`)
+run(`$pip install git+https://github.com/ScottishCovidResponse/data_pipeline_api@0.6.0`)

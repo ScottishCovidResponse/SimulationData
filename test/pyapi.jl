@@ -2,50 +2,56 @@
 
     function _testsuite(api)
         @testset "Read API" begin
-            @test read_estimate(api, "parameter", "example-estimate") == 1.0
-            @test read_estimate(api, "parameter", "example-distribution") == 2.0
-            @test read_estimate(api, "parameter", "example-samples") == 2.0
+            @test read_estimate(api, "parameter-read", "example-estimate") == 1.0
+            @test read_estimate(api, "parameter-read", "example-distribution") == 2.0
+            @test read_estimate(api, "parameter-read", "example-samples") == 2.0
 
-            # print(api.read_distribution("parameter", "example-estimate"))  # expected to fail
-            @test read_distribution(api, "parameter", "example-distribution") == Gamma(1.0, 2.0)
-            # print(api.read_distribution("parameter", "example-samples"))  # expected to fail
+            # print(api.read_distribution("parameter-read", "example-estimate"))  # expected to fail
+            @test read_distribution(api, "parameter-read", "example-distribution") == Gamma(1.0, 2.0)
+            # print(api.read_distribution("parameter-read", "example-samples"))  # expected to fail
 
-            @test read_sample(api, "parameter", "example-estimate") == 1.0
-            @test read_sample(api, "parameter", "example-distribution") isa Real
-            @test read_sample(api, "parameter", "example-samples") ∈ [1, 2, 3]
+            @test read_sample(api, "parameter-read", "example-estimate") == 1.0
+            @test read_sample(api, "parameter-read", "example-distribution") isa Real
+            @test read_sample(api, "parameter-read", "example-samples") ∈ [1, 2, 3]
 
             expected_table = DataFrame(:a => [1, 2], :b => [3, 4])
             expected_array = (data=[1, 2, 3], dimensions=nothing, units=nothing)
-            @test read_table(api, "object", "example-table") == expected_table
-            @test read_array(api, "object", "example-array") == expected_array
+            @test read_table(api, "object-read", "example-table") == expected_table
+            @test read_array(api, "object-read", "example-array") == expected_array
         end
 
         @testset "Write API" begin
-            write_estimate(api, "parameter", "example-estimate", 99.0)
-            @test read_estimate(api, "parameter", "example-estimate") == 99.0
+            # Can't read it before we've written it
+            @test_throws Exception read_estimate(api, "parameter-write", "example-estimate")
+            write_estimate(api, "parameter-write", "example-estimate", 99.0)
+            @test read_estimate(api, "parameter-write", "example-estimate") == 99.0
 
+            @test_throws Exception read_estimate(api, "parameter-write", "example-distribution")
             @testset "Write $d" for d in (Gamma(4, 5), Normal(4, 5))
-                write_distribution(api, "parameter", "example-distribution", d)
-                @test read_distribution(api, "parameter", "example-distribution") == d
+                write_distribution(api, "parameter-write", "example-distribution", d)
+                @test read_distribution(api, "parameter-write", "example-distribution") == d
             end
 
-            write_samples(api, "parameter", "example-samples", [9, 10, 11])
-            @test read_sample(api, "parameter", "example-samples") ∈ [9, 10, 11]
+            @test_throws Exception read_estimate(api, "parameter-write", "example-samples")
+            write_samples(api, "parameter-write", "example-samples", [9, 10, 11])
+            @test read_sample(api, "parameter-write", "example-samples") ∈ [9, 10, 11]
 
+            @test_throws Exception read_estimate(api, "object-write", "example-table")
             df = DataFrame(:a => [9, 10], :b => [11, 12])
-            write_table(api, "object", "example-table", df)
-            @test_broken read_table(api, "object", "example-table") == df
+            write_table(api, "object-write", "example-table", df)
+            @test read_table(api, "object-write", "example-table") == df
 
-            write_array(api, "object", "example-array", [4, 5, 6])
+            @test_throws Exception read_estimate(api, "object-write", "example-array")
+            write_array(api, "object-write", "example-array", [4, 5, 6])
             expected_array = (data=[4, 5, 6], dimensions=nothing, units=nothing)
-            @test_broken read_array(api, "object", "example-array") == expected_array
+            @test read_array(api, "object-write", "example-array") == expected_array
         end
     end
 
     mktempdir() do tempdir
         datadir = mkdir(joinpath(tempdir, "data"))
         config = joinpath(datadir, "config.yaml")
-        accessfile = joinpath(datadir, "access-example.yaml")
+        accessfile = joinpath(datadir, "access-simulationdata.yaml")
         remove_accessfile() = rm(accessfile, force=true)
 
         # Fresh copy of data for each testset because we will be writing stuff
