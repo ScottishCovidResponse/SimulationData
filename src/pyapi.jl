@@ -98,6 +98,51 @@ struct DataPipelineIssue
     severity::Integer
 end
 
+"""
+    DataPipelineDimensions
+
+Wrapper struct for data_pipeline_api.Dimension
+
+## Fields
+- `title`
+- `names`
+- `values`
+- `units`
+"""
+struct DataPipelineDimension
+    title::Union{AbstractString, Nothing}
+    names::Union{AbstractVector{<:AbstractString}, Nothing}
+    values::Union{AbstractVector, Nothing}
+    units::Union{AbstractString, Nothing}
+end
+
+function DataPipelineDimension(;
+    title=nothing, names=nothing, values=nothing, units=nothing
+)
+    return DataPipelineDimension(title, names, values, units)
+end
+
+"""
+    DataPipelineArray
+
+Wrapper struct for data_pipeline_api.Array
+
+## Fields
+- `data`
+- `dimensions`
+- `units`
+"""
+struct DataPipelineArray
+    data::AbstractArray
+    dimensions::Union{AbstractVector{<:DataPipelineDimension}, Nothing}
+    units::Union{AbstractString, Nothing}
+
+    function DataPipelineArray(array::AbstractArray; dimensions=nothing, units=nothing)
+        return new(array, dimensions, units)
+    end
+end
+
+
 function Base.close(api::DataPipelineAPI)
     py"$(api.pyapi).file_api.close()"
 end
@@ -129,8 +174,14 @@ function read_array(api::DataPipelineAPI, data_product, component)
     # The python API returns Array(data=data, dimensions=dimensions, units=units)
     # Disable automatic conversion with 'o' at the end
     d = py"$(api.pyapi).read_array($data_product, $component)"o
-    # Convert to our type
-    return DataPipelineArray(d.data, d.dimensions, d.units)
+    # Convert to our wrapper types
+    dimensions = d.dimensions
+    if !isnothing(dimensions)
+        dimensions = [
+            DataPipelineDimension(dims...) for dims in dimensions
+        ]
+    end
+    return DataPipelineArray(d.data; dimensions=dimensions, units=d.units)
 end
 
 function read_table(api::DataPipelineAPI, data_product, component)
@@ -197,23 +248,6 @@ function write_samples(
     )"
 end
 
-struct DataPipelineDimensions
-    title::Union{AbstractString, Nothing}
-    names::Union{AbstractVector{<:AbstractString}, Nothing}
-    values::Union{AbstractVector, Nothing}
-    units::Union{AbstractString, Nothing}
-end
-
-struct DataPipelineArray
-    data::AbstractArray
-    dimensions::Union{AbstractVector{<:DataPipelineDimensions}, Nothing}
-    units::Union{AbstractString, Nothing}
-end
-
-function DataPipelineArray(array::AbstractArray)
-    return DataPipelineArray(array, nothing, nothing)
-end
-
 function write_array(
     api::DataPipelineAPI,
     data_product,
@@ -229,6 +263,17 @@ function write_array(
         $data_product, $component, $array,
         description=$description, issues=$issues
     )"
+end
+
+function write_array(
+    api::DataPipelineAPI,
+    data_product,
+    component,
+    array::AbstractArray;
+    description=nothing,
+    issues::AbstractVector{DataPipelineIssue}=DataPipelineIssue[]
+)
+    write_array(api, data_product, component, DataPipelineArray(array), description, issues)
 end
 
 function write_table(
