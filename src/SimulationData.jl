@@ -1,5 +1,6 @@
 module SimulationData
 
+using AutoHashEquals
 using DataDeps
 using DataFrames
 using Distributions

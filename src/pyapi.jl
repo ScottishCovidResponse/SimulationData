@@ -99,7 +99,7 @@ struct DataPipelineIssue
 end
 
 """
-    DataPipelineDimensions
+    DataPipelineDimension
 
 Wrapper struct for data_pipeline_api.Dimension
 
@@ -109,7 +109,7 @@ Wrapper struct for data_pipeline_api.Dimension
 - `values`
 - `units`
 """
-struct DataPipelineDimension
+@auto_hash_equals struct DataPipelineDimension
     title::Union{AbstractString, Nothing}
     names::Union{AbstractVector{<:AbstractString}, Nothing}
     values::Union{AbstractVector, Nothing}
@@ -132,7 +132,7 @@ Wrapper struct for data_pipeline_api.Array
 - `dimensions`
 - `units`
 """
-struct DataPipelineArray
+@auto_hash_equals struct DataPipelineArray
     data::AbstractArray
     dimensions::Union{AbstractVector{<:DataPipelineDimension}, Nothing}
     units::Union{AbstractString, Nothing}
@@ -141,7 +141,6 @@ struct DataPipelineArray
         return new(array, dimensions, units)
     end
 end
-
 
 function Base.close(api::DataPipelineAPI)
     py"$(api.pyapi).file_api.close()"

@@ -17,7 +17,8 @@
             expected_table = DataFrame(:a => [1, 2], :b => [3, 4])
             expected_array = DataPipelineArray([1, 2, 3])
             @test read_table(api, "object-read", "example-table") == expected_table
-            @test read_array(api, "object-read", "example-array") == expected_array
+            read_result = read_array(api, "object-read", "example-array")
+            @test read_result == expected_array
         end
 
         @testset "Write API" begin
@@ -42,10 +43,19 @@
             @test read_table(api, "object-write", "example-table") == df
 
             @test_throws Exception read_estimate(api, "object-write", "example-array")
-            write_array(api, "object-write", "example-array", [4, 5, 6])
+            dimensions = [
+                DataPipelineDimension(
+                    title="dimension 1",
+                    names=["column 1"],
+                    values=[1],
+                    units="dimension 1 units",
+                )
+            ]
+            units = "array units"
+            array = DataPipelineArray([4, 5, 6]; dimensions=dimensions, units=units)
+            write_array(api, "object-write", "example-array", array)
             read_result = read_array(api, "object-write", "example-array")
-            @test read_result isa DataPipelineArray
-            @test read_result.data == [4, 5, 6]
+            @test read_result == array
         end
     end
 
