@@ -10,6 +10,8 @@ export
     DataPipelineAPI,
     DataPipelineIssue,
     StandardAPI,
+    DataPipelineDimensions,
+    DataPipelineArray,
     read_estimate,
     read_distribution,
     read_sample,

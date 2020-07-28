@@ -15,7 +15,7 @@
             @test read_sample(api, "parameter-read", "example-samples") ∈ [1, 2, 3]
 
             expected_table = DataFrame(:a => [1, 2], :b => [3, 4])
-            expected_array = (data=[1, 2, 3], dimensions=nothing, units=nothing)
+            expected_array = DataPipelineArray([1, 2, 3])
             @test read_table(api, "object-read", "example-table") == expected_table
             @test read_array(api, "object-read", "example-array") == expected_array
         end
@@ -43,8 +43,9 @@
 
             @test_throws Exception read_estimate(api, "object-write", "example-array")
             write_array(api, "object-write", "example-array", [4, 5, 6])
-            expected_array = (data=[4, 5, 6], dimensions=nothing, units=nothing)
-            @test read_array(api, "object-write", "example-array") == expected_array
+            read_result = read_array(api, "object-write", "example-array")
+            @test read_result isa DataPipelineArray
+            @test read_result.data == [4, 5, 6]
         end
     end
 

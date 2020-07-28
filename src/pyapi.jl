@@ -129,8 +129,8 @@ function read_array(api::DataPipelineAPI, data_product, component)
     # The python API returns Array(data=data, dimensions=dimensions, units=units)
     # Disable automatic conversion with 'o' at the end
     d = py"$(api.pyapi).read_array($data_product, $component)"o
-    # Convert to NamedTuple
-    return (data=d.data, dimensions=d.dimensions, units=d.units)
+    # Convert to our type
+    return DataPipelineArray(d.data, d.dimensions, d.units)
 end
 
 function read_table(api::DataPipelineAPI, data_product, component)
@@ -197,11 +197,28 @@ function write_samples(
     )"
 end
 
+struct DataPipelineDimensions
+    title::Union{AbstractString, Nothing}
+    names::Union{AbstractVector{<:AbstractString}, Nothing}
+    values::Union{AbstractVector, Nothing}
+    units::Union{AbstractString, Nothing}
+end
+
+struct DataPipelineArray
+    data::AbstractArray
+    dimensions::Union{AbstractVector{<:DataPipelineDimensions}, Nothing}
+    units::Union{AbstractString, Nothing}
+end
+
+function DataPipelineArray(array::AbstractArray)
+    return DataPipelineArray(array, nothing, nothing)
+end
+
 function write_array(
     api::DataPipelineAPI,
     data_product,
     component,
-    array::NamedTuple{(:data, :dimensions, :units)};
+    array::DataPipelineArray;
     description=nothing,
     issues::AbstractVector{DataPipelineIssue}=DataPipelineIssue[]
 )
@@ -212,17 +229,6 @@ function write_array(
         $data_product, $component, $array,
         description=$description, issues=$issues
     )"
-end
-
-function write_array(
-    api::DataPipelineAPI, data_product, component, array;
-    description=nothing, issues::AbstractVector{DataPipelineIssue}=DataPipelineIssue[]
-)
-    array = (data=array, dimensions=nothing, units=nothing)
-    return write_array(
-        api, data_product, component, array;
-        description=description, issues=issues
-    )
 end
 
 function write_table(
