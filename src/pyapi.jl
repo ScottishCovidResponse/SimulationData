@@ -10,12 +10,10 @@ function pycallinit()
     py"""
     import scipy
     from data_pipeline_api.standard_api import StandardAPI
-    #from data_pipeline_api import registry
-    #from data_pipeline_api.registry.common import (
-    #    DATA_REGISTRY_ACCESS_TOKEN,
-    #    DATA_REGISTRY_URL,
-    #    DEFAULT_DATA_REGISTRY_URL,
-    #)
+    from data_pipeline_api.registry import download
+    from data_pipeline_api.registry.common import (
+        DEFAULT_DATA_REGISTRY_URL,
+    )
     """
     api_version = Conda.version("data-pipeline-api")
     @info "Found data-pipeline-api v$api_version"
@@ -245,13 +243,25 @@ function write_table(
     )"
 end
 
-function download_registry(config_filename)
-    # Only support default for now
-    data_registry = py"DEFAULT_DATA_REGISTRY_URL"
-    return data_registry
-    #py"download_from_config_file(
-    #    config_filename=$config_filename,
-    #    data_registry_url=$data_registry,
-    #    token=$token
-    #)"
+function download_data_registry(
+    config_filename;
+    data_registry_url=py"DEFAULT_DATA_REGISTRY_URL",
+    token=""
+)
+    isfile(config_filename) || throw(ArgumentError("$config_filename not found"))
+    @info """
+        Downloading from registry: $data_registry_url
+        Using config file: $config_filename
+        ...
+    """
+    try
+        py"download.download_from_config_file(
+            config_filename=$config_filename,
+            data_registry_url=$data_registry_url,
+            token=$token
+        )"
+        @info "Registry download done"
+    catch err
+        @warn "Registry download errored" exception=err
+    end
 end
