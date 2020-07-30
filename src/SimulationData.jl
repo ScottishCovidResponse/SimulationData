@@ -12,7 +12,7 @@ export
     StandardAPI,
     read_estimate,
     read_distribution,
-    read_sample,
+    read_samples,
     read_array,
     read_table,
     write_estimate,

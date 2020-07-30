@@ -9,11 +9,7 @@
             # print(api.read_distribution("parameter-read", "example-estimate"))  # expected to fail
             @test read_distribution(api, "parameter-read", "example-distribution") == Gamma(1.0, 2.0)
             # print(api.read_distribution("parameter-read", "example-samples"))  # expected to fail
-
-            @test read_sample(api, "parameter-read", "example-estimate") == 1.0
-            @test read_sample(api, "parameter-read", "example-distribution") isa Real
-            @test read_sample(api, "parameter-read", "example-samples") ∈ [1, 2, 3]
-
+@test read_samples(api, "parameter-read", "example-samples") == [1.0, 2.0, 3.0]
             expected_table = DataFrame(:a => [1, 2], :b => [3, 4])
             expected_array = (data=[1, 2, 3], dimensions=nothing, units=nothing)
             @test read_table(api, "object-read", "example-table") == expected_table
@@ -34,7 +30,7 @@
 
             @test_throws Exception read_estimate(api, "parameter-write", "example-samples")
             write_samples(api, "parameter-write", "example-samples", [9, 10, 11])
-            @test read_sample(api, "parameter-write", "example-samples") ∈ [9, 10, 11]
+            @test read_samples(api, "parameter-write", "example-samples") == [9.0, 10, 11]
 
             @test_throws Exception read_estimate(api, "object-write", "example-table")
             df = DataFrame(:a => [9, 10], :b => [11, 12])

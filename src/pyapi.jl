@@ -48,7 +48,7 @@ struct StandardAPI <: DataPipelineAPI
 
     function StandardAPI(config_filename, uri, git_sha)
         isfile(config_filename) || throw(ArgumentError("File $config_filename not found"))
-        return StandardAPI(py"StandardAPI($config_filename, $uri, $git_sha)")
+        return StandardAPI(py"StandardAPI.from_config($config_filename, $uri, $git_sha)")
     end
 
     StandardAPI(pyapi::PyObject) = new(pyapi)
@@ -78,7 +78,7 @@ function StandardAPI(f::Function, config_filename, uri, git_sha)
     # Note that `StandardAPI` inside py"" refers to the class in the python library, while
     # `StandardAPI` inside the block refers to the `StandardAPI` Julia struct in this
     # module. (They are named the same for convenience)
-    @pywith py"StandardAPI($config_filename, $uri, $git_sha)" as pyapi begin
+    @pywith py"StandardAPI.from_config($config_filename, $uri, $git_sha)" as pyapi begin
         result = f(StandardAPI(pyapi))
     end
     return result
@@ -112,9 +112,9 @@ function read_distribution(api::DataPipelineAPI, data_product, component)
     return _dist_py_to_jl(d)
 end
 
-function read_sample(api::DataPipelineAPI, data_product, component)
-    d = py"$(api.pyapi).read_sample($data_product, $component)"
-    return convert(Float64, d)
+function read_samples(api::DataPipelineAPI, data_product, component)
+    d = py"$(api.pyapi).read_samples($data_product, $component)"
+    return convert(Array{Float64}, d)
 end
 
 """
