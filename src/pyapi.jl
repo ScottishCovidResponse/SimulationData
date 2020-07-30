@@ -243,6 +243,19 @@ function write_table(
     )"
 end
 
+"""
+    download_data_registry(
+        config_filename;
+        data_registry_url=py"DEFAULT_DATA_REGISTRY_URL",
+        token=""
+    )
+
+Download (a subset of) the data registry using the config specified by `config_filename`.
+
+## Keyword arguments
+- `data_registry_url`: the location of the data registry. The default is typically fine.
+- `token`: Registry access token. Shouldn't be needed for downloading.
+"""
 function download_data_registry(
     config_filename;
     data_registry_url=py"DEFAULT_DATA_REGISTRY_URL",
