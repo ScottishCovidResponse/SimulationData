@@ -9,7 +9,7 @@
             # print(api.read_distribution("parameter-read", "example-estimate"))  # expected to fail
             @test read_distribution(api, "parameter-read", "example-distribution") == Gamma(1.0, 2.0)
             # print(api.read_distribution("parameter-read", "example-samples"))  # expected to fail
-
+@test read_samples(api, "parameter-read", "example-samples") == [1.0, 2.0, 3.0]
             expected_table = DataFrame(:a => [1, 2], :b => [3, 4])
             expected_array = (data=[1, 2, 3], dimensions=nothing, units=nothing)
             @test read_table(api, "object-read", "example-table") == expected_table
