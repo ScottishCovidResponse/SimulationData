@@ -9,11 +9,14 @@
             # print(api.read_distribution("parameter-read", "example-estimate"))  # expected to fail
             @test read_distribution(api, "parameter-read", "example-distribution") == Gamma(1.0, 2.0)
             # print(api.read_distribution("parameter-read", "example-samples"))  # expected to fail
-@test read_samples(api, "parameter-read", "example-samples") == [1.0, 2.0, 3.0]
+
+            @test read_samples(api, "parameter-read", "example-samples") == [1.0, 2.0, 3.0]
+
             expected_table = DataFrame(:a => [1, 2], :b => [3, 4])
-            expected_array = (data=[1, 2, 3], dimensions=nothing, units=nothing)
+            expected_array = DataPipelineArray([1, 2, 3])
             @test read_table(api, "object-read", "example-table") == expected_table
-            @test read_array(api, "object-read", "example-array") == expected_array
+            read_result = read_array(api, "object-read", "example-array")
+            @test read_result == expected_array
         end
 
         @testset "Write API" begin
@@ -38,9 +41,19 @@
             @test read_table(api, "object-write", "example-table") == df
 
             @test_throws Exception read_estimate(api, "object-write", "example-array")
-            write_array(api, "object-write", "example-array", [4, 5, 6])
-            expected_array = (data=[4, 5, 6], dimensions=nothing, units=nothing)
-            @test read_array(api, "object-write", "example-array") == expected_array
+            dimensions = [
+                DataPipelineDimension(
+                    title="dimension 1",
+                    names=["column 1"],
+                    values=[1],
+                    units="dimension 1 units",
+                )
+            ]
+            units = "array units"
+            array = DataPipelineArray([4, 5, 6]; dimensions=dimensions, units=units)
+            write_array(api, "object-write", "example-array", array)
+            read_result = read_array(api, "object-write", "example-array")
+            @test read_result == array
         end
     end
 

@@ -1,5 +1,6 @@
 module SimulationData
 
+using AutoHashEquals
 using DataDeps
 using DataFrames
 using Distributions
@@ -10,6 +11,8 @@ export
     DataPipelineAPI,
     DataPipelineIssue,
     StandardAPI,
+    DataPipelineDimension,
+    DataPipelineArray,
     read_estimate,
     read_distribution,
     read_samples,
