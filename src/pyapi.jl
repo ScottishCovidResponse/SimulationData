@@ -276,7 +276,10 @@ function write_array(
     description=nothing,
     issues::AbstractVector{DataPipelineIssue}=DataPipelineIssue[]
 )
-    write_array(api, data_product, component, DataPipelineArray(array), description, issues)
+    write_array(
+        api, data_product, component, DataPipelineArray(array);
+        description=description, issues=issues
+    )
 end
 
 function write_table(
