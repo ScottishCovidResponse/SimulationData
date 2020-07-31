@@ -1,7 +1,7 @@
 name = "SimulationData"
 uuid = "3d44aec0-db1b-416b-9784-2428c815ea7f"
 authors = ["Scottish Covid Research Consortium"]
-version = "0.5.0"
+version = "0.6.0"
 
 [deps]
 AutoHashEquals = "15f4f7f2-30c1-5605-9d31-71845cf9641f"
