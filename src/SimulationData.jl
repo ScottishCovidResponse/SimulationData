@@ -22,7 +22,8 @@ export
     write_distribution,
     write_samples,
     write_array,
-    write_table
+    write_table,
+    download_data_registry
 
 
 include("units.jl")
