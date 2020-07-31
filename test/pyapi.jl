@@ -54,6 +54,14 @@
             write_array(api, "object-write", "example-array", array)
             read_result = read_array(api, "object-write", "example-array")
             @test read_result == array
+
+            @testset "Automatic array conversion" begin
+                # Write a plain array, it should get transformed into the appropriate type
+                array = [10.0, 11.0, 12.0]
+                write_array(api, "object-write", "example-array", array)
+                read_result = read_array(api, "object-write", "example-array")
+                @test read_result == DataPipelineArray(array)
+            end
         end
     end
 
