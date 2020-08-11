@@ -13,10 +13,6 @@ env:
   TRAVIS_CI_BUILD=true
   DATADEPS_ALWAYS_ACCEPT=true
 
-jobs:
-  allow_failures:
-    - julia: 1.5
-
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia --project=@. -e "using Pkg; Pkg.activate(\".\"); Pkg.instantiate(); Pkg.build(\"SimulationData\"); Pkg.test(\"SimulationData\", coverage=true);"
