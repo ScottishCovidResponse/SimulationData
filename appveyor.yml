@@ -29,10 +29,8 @@ install:
   - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
   - SET PATH=C:\Python37;%PATH%
   - python get-pip.py --prefix=C:\Users\appveyor\.julia\conda\3\Library\tmp
-  - ls C:\Users\appveyor\.julia\conda\3\Library\tmp
-  - ls C:\Users\appveyor\.julia\conda\3\Library\tmp\Scripts
   - ls C:\Users\appveyor\.julia\conda\3\Library\tmp\Scripts\pip.exe
-  - cp C:\Users\appveyor\.julia\conda\3\Library\tmp\Scripts\pip.exe C:\Users\appveyor\.julia\conda\3\Library\bin\pip.exe
+  - xcopy C:\Users\appveyor\.julia\conda\3\Library\tmp\Scripts\pip.exe C:\Users\appveyor\.julia\conda\3\Library\bin /y
   - ls C:\Users\appveyor\.julia\conda\3\Library\bin
 
 build_script:
