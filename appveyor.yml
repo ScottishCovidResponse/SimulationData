@@ -38,6 +38,8 @@ install:
 build_script:
   - echo "%PYTHON%"
   - echo "%JL_BUILD_SCRIPT%"
+  - ls C:\Users\appveyor\.julia\conda\3\Library\bin
+  - ls C:\Users\appveyor\.julia\conda\3\Library\
   - C:\julia\bin\julia -e "%JL_BUILD_SCRIPT%"
 
 test_script:
