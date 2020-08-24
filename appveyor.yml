@@ -33,11 +33,8 @@ build_script:
   - ls C:\Users\appveyor\.julia
   - ls C:\Users\appveyor\.julia\conda
   - ls C:\Users\appveyor\.julia\conda\3
-  - ls C:\Users\appveyor\.julia\conda\3\Lib
   - ls C:\Users\appveyor\.julia\conda\3\Library
-  - ls C:\Users\appveyor\.julia\conda\3\Menu
-  - ls C:\Users\appveyor\.julia\conda\3\Scripts
-  - ls C:\Users\appveyor\.julia\conda\3\Tools
+  - ls C:\Users\appveyor\.julia\conda\3\Library\bin
   - echo "%PYTHON%"
   - echo "%JL_BUILD_SCRIPT%"
   - C:\julia\bin\julia -e "%JL_BUILD_SCRIPT%"
