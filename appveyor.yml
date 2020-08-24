@@ -27,7 +27,8 @@ notifications:
 install:
   - ps: iex ((new-object net.webclient).DownloadString("https://raw.githubusercontent.com/JuliaCI/Appveyor.jl/version-1/bin/install.ps1"))
   - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-  - C:\Python37 get-pip.py --prefix=C:\Users\appveyor\.julia\conda\3\Library\bin
+  - SET PATH=C:\Python37;%PATH%
+  - python get-pip.py --prefix=C:\Users\appveyor\.julia\conda\3\Library\bin
   - ls C:\Users\appveyor\.julia\conda\3\Library\bin
 
 build_script:
