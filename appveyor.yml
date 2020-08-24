@@ -36,3 +36,4 @@ test_script:
   - echo "%PYTHON%"
   - echo "%JL_TEST_SCRIPT%"
   - C:\julia\bin\julia -e "%JL_TEST_SCRIPT%"
+  
