@@ -30,7 +30,7 @@ install:
   - SET PATH=C:\Python37;%PATH%
   - python get-pip.py --prefix=C:\Users\appveyor\.julia\conda\3\Library\tmp
   - ls C:\Users\appveyor\.julia\conda\3\Library\tmp\Scripts\pip.exe
-  - xcopy C:\Users\appveyor\.julia\conda\3\Library\tmp\Scripts\pip.exe C:\Users\appveyor\.julia\conda\3\Library\bin /y
+  - xcopy C:\Users\appveyor\.julia\conda\3\Library\tmp\Scripts\pip.exe C:\Users\appveyor\.julia\conda\3\Library\bin\ /y
   - ls C:\Users\appveyor\.julia\conda\3\Library\bin
 
 build_script:
