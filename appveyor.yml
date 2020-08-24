@@ -29,7 +29,10 @@ install:
 
 build_script:
   - C:\julia\bin\julia -e "using Pkg; Pkg.add(\"PyCall\"); Pkg.build(\"PyCall\")"
-  - ls C:\Users\appveyor\.julia\conda\3\*
+  - ls C:\Users\appveyor\.julia\*
+  - ls C:\Users\appveyor\.julia\conda\*
+  - ls C:\julia\.julia\conda\*
+  - ls C:\julia\bin\*
   - echo "%PYTHON%"
   - echo "%JL_BUILD_SCRIPT%"
   - C:\julia\bin\julia -e "%JL_BUILD_SCRIPT%"
