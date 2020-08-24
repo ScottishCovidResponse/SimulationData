@@ -29,9 +29,7 @@ install:
 
 build_script:
   - C:\julia\bin\julia -e "using Pkg; Pkg.add(\"PyCall\"); Pkg.build(\"PyCall\")"
-  - if (Test-Path C:\Users\appveyor\pip) { ls C:\Users\appveyor\pip } else { echo 1 }
-  - if (Test-Path C:\Users\appveyor ) { ls C:\Users\appveyor } else { echo 2 }
-  - if (Test-Path C:\Users\appveyor\.julia ) { ls C:\Users\appveyor\.julia } else { echo 3 }
+  - ls C:\julia
   - echo "%PYTHON%"
   - echo "%JL_BUILD_SCRIPT%"
   - C:\julia\bin\julia -e "%JL_BUILD_SCRIPT%"
