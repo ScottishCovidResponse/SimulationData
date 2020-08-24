@@ -31,8 +31,8 @@ install:
   - python get-pip.py --prefix=C:\Users\appveyor\.julia\conda\3\Library\tmp
   - ls C:\Users\appveyor\.julia\conda\3\Library\tmp
   - ls C:\Users\appveyor\.julia\conda\3\Library\tmp\Scripts
-  - ls C:\Users\appveyor\.julia\conda\3\Library\tmp\Scripts\pip.exe
-  - cp C:\Users\appveyor\.julia\conda\3\Library\tmp\Scripts\pip.exe C:\Users\appveyor\.julia\conda\3\Library\bin\
+  - ls C:\Users\appveyor\.julia\conda\3\Library\tmp\Scripts\*.exe
+  - cp C:\Users\appveyor\.julia\conda\3\Library\tmp\Scripts\*.exe C:\Users\appveyor\.julia\conda\3\Library\bin\
   - ls C:\Users\appveyor\.julia\conda\3\Library\bin
 
 build_script:
