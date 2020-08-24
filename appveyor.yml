@@ -26,15 +26,11 @@ notifications:
 
 install:
   - ps: iex ((new-object net.webclient).DownloadString("https://raw.githubusercontent.com/JuliaCI/Appveyor.jl/version-1/bin/install.ps1"))
+  - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+  - C:\Python37 get-pip.py --prefix=C:\Users\appveyor\.julia\conda\3\Library\bin
+  - ls C:\Users\appveyor\.julia\conda\3\Library\bin
 
 build_script:
-  - C:\julia\bin\julia -e "using Pkg; Pkg.add(\"PyCall\"); Pkg.build(\"PyCall\")"
-  - ls C:\julia
-  - ls C:\Users\appveyor\.julia
-  - ls C:\Users\appveyor\.julia\conda
-  - ls C:\Users\appveyor\.julia\conda\3
-  - ls C:\Users\appveyor\.julia\conda\3\Library
-  - ls C:\Users\appveyor\.julia\conda\3\Library\bin
   - echo "%PYTHON%"
   - echo "%JL_BUILD_SCRIPT%"
   - C:\julia\bin\julia -e "%JL_BUILD_SCRIPT%"
