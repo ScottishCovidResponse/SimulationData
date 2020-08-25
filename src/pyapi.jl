@@ -2,7 +2,6 @@
 # Note that this reuquires that the running virtual env is the conda env for
 # the datapipeline April
 
-using Conda
 using PyCall
 using Pandas
 
@@ -15,8 +14,6 @@ function pycallinit()
         DEFAULT_DATA_REGISTRY_URL,
     )
     """
-    api_version = Conda.version("data-pipeline-api")
-    @info "Found data-pipeline-api v$api_version"
 end
 
 """
