@@ -21,7 +21,6 @@ if haskey(ENV, "http_proxy")
     push!(args, ENV["http_proxy"])
 end
 push!(args, "install")
-push!(args, "--user")
 append!(args, PACKAGES)
 
 pip.main(args)
