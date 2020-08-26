@@ -30,7 +30,7 @@ install:
 build_script:
   - echo "%PYTHON%"
   - echo "%JL_BUILD_SCRIPT%"
-  - ls C:\Users\appveyor\.julia\conda\3\Scripts
+  - ls C:\Users\appveyor\.julia\conda\3
   - cp C:\Users\appveyor\.julia\conda\3\Scripts\pip.exe C:\Users\appveyor\.julia\conda\3\Library\bin\pip.exe
   - cp C:\Users\appveyor\.julia\conda\3\Scripts\pip3.exe C:\Users\appveyor\.julia\conda\3\Library\bin\pip3.exe
   - cp C:\Users\appveyor\.julia\conda\3\Scripts\pip-script.py C:\Users\appveyor\.julia\conda\3\Library\bin\pip-script.py
