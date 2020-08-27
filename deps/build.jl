@@ -4,6 +4,5 @@ Pkg.build("PyCall")
 
 using Conda
 
-pip = joinpath(Conda.BINDIR, "pip")
-run(`$pip install scipy pyyaml setuptools-scm aiohttp`)
-run(`$pip install git+https://github.com/ScottishCovidResponse/data_pipeline_api@0.7.0`)
+Conda.add("data_pipeline_api", channel="scottishcovidresponse")
+Conda.add.(["scipy", "pyyaml", "setuptools-scm", "aiohttp"])
